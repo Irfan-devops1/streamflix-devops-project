@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamflix-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: streamflix-api
+  template:
+    metadata:
+      labels:
+        app: streamflix-api
+    spec:
+      containers:
+        - name: api
+          image: YOUR_DOCKERHUB_USERNAME/streamflix-api:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 300m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamflix-api
+spec:
+  selector:
+    app: streamflix-api
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP

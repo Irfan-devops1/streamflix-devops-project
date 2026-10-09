@@ -1,0 +1,15 @@
+services:
+  api:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    networks:
+      default:
+        aliases:
+          - streamflix-api
+  web:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
