@@ -63,6 +63,3 @@ k8s/                     Kubernetes Deployments and Services
 docker-compose.yml       Local development
 Jenkinsfile              CI/CD pipeline
 ```
-
-## Notes
-This is a learning/portfolio starter, not a production streaming platform. It does not implement authentication, DRM, payment, a video CDN, or licensed playback. Use content you own or have permission to display.
