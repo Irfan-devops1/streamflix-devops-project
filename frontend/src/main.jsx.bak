@@ -7,6 +7,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All");
   const [selected, setSelected] = useState(null);
+  const [showPlayer, setShowPlayer] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -41,8 +42,8 @@ function App() {
           <select aria-label="Filter by genre" value={genre} onChange={e => setGenre(e.target.value)}>{genres.map(g => <option key={g}>{g}</option>)}</select>
         </div>
         {error && <p className="error">{error}</p>}
-        <div className="grid">{filtered.map(t => <button className="poster-card" key={t.id} onClick={() => setSelected(t)}> 
-		<img src={t.poster} alt="" loading="lazy"/><span className="card-overlay"><strong>{t.title}</strong><small>{t.year} · {t.genre} · {t.rating}</small></span>
+        <div className="grid">{filtered.map(t => <button className="poster-card" key={t.id} onClick={() => { setSelected(t); setShowPlayer(false); }}>
+          <img src={t.poster} alt="" loading="lazy"/><span className="card-overlay"><strong>{t.title}</strong><small>{t.year} · {t.genre} · {t.rating}</small></span>
         </button>)}</div>
         {!error && filtered.length === 0 && <p>No titles match your search.</p>}
       </section>
@@ -50,14 +51,11 @@ function App() {
     <footer>© 2026 StreamFlix Demo · Portfolio learning project · No licensed video content included</footer>
     {selected && <div className="modal-backdrop" role="presentation" onClick={() => setSelected(null)}>
       <section className="modal" role="dialog" aria-modal="true" aria-label={selected.title} onClick={e => e.stopPropagation()}>
-        <button className="close" onClick={() => setSelected(null)} aria-label="Close details">×</button>
+        <button className="close" onClick={() => { setSelected(null); setShowPlayer(false); }} aria-label="Close details">×</button>
         <img src={selected.poster} alt=""/>
-        <div className="modal-copy">
-          <p className="eyebrow">{selected.genre} · {selected.year} · {selected.rating}</p>
-          <h2>{selected.title}</h2>
-          <p>{selected.description}</p>
-          <button className="secondary-btn back-btn" onClick={() => setSelected(null)}>Back to browsing</button>
-        </div>
+        <div className="modal-copy"><p className="eyebrow">{selected.genre} · {selected.year} · {selected.rating}</p><h2>{selected.title}</h2><p>{selected.description}</p><p className="sample-note">This portfolio demo uses a public sample clip, not the actual movie.</p>
+          {!showPlayer ? <button className="primary-btn" onClick={() => setShowPlayer(true)}>▶ Play sample preview</button> : <div className="video-wrap"><video controls autoPlay playsInline preload="metadata" aria-label={`Sample preview for ${selected.title}`}><source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4"/>Your browser does not support HTML5 video.</video><button className="secondary-btn" onClick={() => setShowPlayer(false)}>Close preview</button></div>}
+          <button className="secondary-btn back-btn" onClick={() => { setSelected(null); setShowPlayer(false); }}>Back to browsing</button></div>
       </section>
     </div>}
   </div>;
